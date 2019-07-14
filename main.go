@@ -2,7 +2,6 @@ package main
 
 import (
 	"html/template"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -13,15 +12,16 @@ import (
 
 func loadTemplate() (*template.Template, error) {
 	t := template.New("")
-	for name, file := range Assets.Files {
-		if file.IsDir() || !strings.HasSuffix(name, ".tmpl") {
+	for _, name := range AssetNames() {
+		file, err := AssetInfo(name)
+		if err != nil || file.IsDir() || !strings.HasSuffix(name, ".tmpl") {
 			continue
 		}
-		h, err := ioutil.ReadAll(file)
+		contents, err := Asset(name)
 		if err != nil {
 			return nil, err
 		}
-		t, err = t.New(name).Parse(string(h))
+		t, err = t.New(name).Parse(string(contents))
 		if err != nil {
 			return nil, err
 		}

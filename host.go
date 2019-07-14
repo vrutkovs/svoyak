@@ -20,7 +20,7 @@ func (s *ServerSettings) prepareSession(c *gin.Context) {
 
 func (s *ServerSettings) showStatus(c *gin.Context) {
 	// TODO: generate QR code
-	c.HTML(http.StatusOK, "/templates/session.tmpl", gin.H{
+	c.HTML(http.StatusOK, "templates/session.tmpl", gin.H{
 		"Url": s.url,
 		"ID":  c.Param("id"),
 	})
