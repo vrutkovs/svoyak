@@ -14,8 +14,11 @@ node('master') {
       openshift.withProject() {
         echo "Waiting for src build to complete"
         def bc = openshift.selector('buildconfig/svoyak-src')
-        def buildSelector = bc.startBuild()
-        buildSelector.logs('-f')
+        def newBuild = bc.startBuild()
+        def status = newBuild.logs('-f').status
+        if ( status != "Completed") {
+          error('Source failed to build, status: "'+status+'"')
+        }
       }
     }
   }
@@ -25,8 +28,10 @@ node('master') {
       openshift.withProject() {
         echo "Waiting for binary build to complete"
         def bc = openshift.selector('buildconfig/svoyak-bin')
-        def buildSelector = bc.startBuild()
-        buildSelector.logs('-f')
+        def newBuild = bc.startBuild()
+        if (newBuild.logs('-f').status != "Completed") {
+          error('Source failed to build')
+        }
       }
     }
   }
