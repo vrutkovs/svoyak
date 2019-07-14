@@ -6,10 +6,7 @@ import (
 	"os"
 )
 
-// ServerSettings stores info about the server
-type ServerSettings struct {
-	url string
-}
+//TODO: use gorilla mux insted of arg parsing
 
 // handleStart would display a random QR code for the session
 func (s *ServerSettings) handleStart() http.HandlerFunc {
