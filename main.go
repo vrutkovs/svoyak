@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 
@@ -28,6 +29,11 @@ func loadTemplate() (*template.Template, error) {
 	return t, nil
 }
 
+// health is k8s endpoint for liveness check
+func health(c *gin.Context) {
+	c.String(http.StatusOK, "")
+}
+
 func main() {
 	url := os.Getenv("URL")
 	if len(url) < 0 {
@@ -42,7 +48,13 @@ func main() {
 	}
 	r.SetHTMLTemplate(t)
 
+	r.Use(
+		gin.LoggerWithWriter(gin.DefaultWriter, "/health"),
+		gin.Recovery(),
+	)
+
 	r.GET("/", server.prepareSession)
+	r.GET("/health", health)
 	r.GET("/session/:id", server.showStatus)
 	r.GET("/join/:id", server.joinGame)
 	r.GET("/button/:id", server.buttonClick)
