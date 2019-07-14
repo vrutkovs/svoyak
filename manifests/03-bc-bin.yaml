@@ -39,4 +39,3 @@ spec:
   successfulBuildsHistoryLimit: 5
   triggers:
   - type: ConfigChange
-  - type: ImageChange
