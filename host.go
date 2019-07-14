@@ -35,7 +35,7 @@ func (s *ServerSettings) handleStatusViaWS(c *gin.Context) {
 // sendStatusViaWebSocket would display client ID
 func (s *ServerSettings) sendStatusViaWebSocket(id string) {
 	// TODO: create a structure
-	responseJSON := fmt.Sprintf("{'action': 'join', 'id': '%s'}", id)
+	responseJSON := fmt.Sprintf("{'action': 'joined', 'id': '%s'}", id)
 	if s.statusWebSocket != nil {
 		s.statusWebSocket.WriteMessage(websocket.TextMessage, []byte(responseJSON))
 	}
@@ -62,7 +62,7 @@ func (s *ServerSettings) handleJoinViaWS(c *gin.Context) {
 		var m WSMessage
 		err = json.Unmarshal(msg, &m)
 		if err != nil {
-			log.Printf("Failed to unmarshal message '%+v': %+v", msg, err)
+			log.Printf("Failed to unmarshal message '%+v': %+v", string(msg), err)
 		}
 		if m.action == "join" {
 			clientID := xid.New().String()
