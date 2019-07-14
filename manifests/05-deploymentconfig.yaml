@@ -35,6 +35,9 @@ spec:
         - image: ''
           imagePullPolicy: Always
           name: svoyak
+          env:
+          - name: URL
+            value: https://svoyak.e8ca.engint.openshiftapps.com
           ports:
             - containerPort: 8080
               protocol: TCP
