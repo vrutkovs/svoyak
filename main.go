@@ -56,8 +56,9 @@ func main() {
 	}
 	r.SetHTMLTemplate(t)
 
-	r.GET("/", server.prepareSession)
+	r.GET("/", server.generateSession)
 	r.GET("/session/:id", server.showStatus)
+	r.GET("/ws/session/:id", server.statusWebSocket)
 	r.GET("/join/:id", server.joinGame)
 	r.GET("/button/:id", server.buttonClick)
 

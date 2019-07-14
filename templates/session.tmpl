@@ -5,5 +5,29 @@
 <body>
   <a href="{{.Url}}/join/{{.ID}}">Join game</a><br/>
   QR code goes here
+
+  <script>
+    let socket = new WebSocket("ws://.Url/ws/session/{{.ID}}");
+    console.log("Attempting Connection...");
+
+    socket.onopen = () => {
+      console.log("Successfully Connected");
+      socket.send("{'action': 'join'}")
+    };
+
+    socket.onmessage = function (e) {
+      console.log("Socket got data: ", e.data);
+      //window.location.href = e.data;
+    };
+
+    socket.onclose = event => {
+      console.log("Socket Closed Connection: ", event);
+    };
+
+    socket.onerror = error => {
+      console.log("Socket Error: ", error);
+    };
+
+  </script>
 </body>
 </html>
