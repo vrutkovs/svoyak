@@ -7,7 +7,7 @@
   QR code goes here
 
   <script>
-    let socket = new WebSocket("ws://.Url/ws/session/{{.ID}}");
+    let socket = new WebSocket("ws://{{.Url}}/ws/session/{{.ID}}");
     console.log("Attempting Connection...");
 
     socket.onopen = () => {
