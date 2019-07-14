@@ -10,7 +10,7 @@ import (
 func (s *ServerSettings) prepareSession(w *http.ResponseWriter, r *http.Request) {
 	// generate random UUID for session
 	// redirect to start page
-	http.Redirect(*w, r, fmt.Sprintf("%s/join?id=%s", s.url, xid.New().String()), 301)
+	http.Redirect(*w, r, fmt.Sprintf("%s/session?id=%s", s.url, xid.New().String()), 301)
 }
 
 func (s *ServerSettings) statusPage(w *http.ResponseWriter, session string) {
