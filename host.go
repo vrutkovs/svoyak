@@ -73,14 +73,14 @@ func (s *ServerSettings) handleJoinViaWS(c *gin.Context) {
 // handleJoin would generate a userID for a button and generate unique URL
 func (s *ServerSettings) handleJoin(w WSMessage, t int, conn *websocket.Conn, id string) {
 	//TODO: associate button ID with session
-	buttonURL := fmt.Sprintf("%s/button/%s", s.url, id)
+	buttonURL := fmt.Sprintf("/button/%s", id)
 	conn.WriteMessage(t, []byte(buttonURL))
 }
 
 // prepareSession would display a random QR code for the session
 func (s *ServerSettings) generateSession(c *gin.Context) {
 	// generate random UUID for session
-	sessionPage := fmt.Sprintf("%s/session/%s", s.url, xid.New().String())
+	sessionPage := fmt.Sprintf("session/%s", xid.New().String())
 	log.Printf("Generated URL: %s\n", sessionPage)
 	// redirect to session page
 	c.Redirect(http.StatusMovedPermanently, sessionPage)
@@ -89,7 +89,6 @@ func (s *ServerSettings) generateSession(c *gin.Context) {
 func (s *ServerSettings) showStatus(c *gin.Context) {
 	// TODO: generate QR code
 	c.HTML(http.StatusOK, "templates/session.tmpl", gin.H{
-		"Url": s.url,
-		"ID":  c.Param("id"),
+		"ID": c.Param("id"),
 	})
 }

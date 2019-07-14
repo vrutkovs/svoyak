@@ -5,7 +5,15 @@
 <body>
   This is your button. There are many like it, but this one is yours
   <script>
-    let socket = new WebSocket("ws://{{.Url}}/ws/join-session/{{.ID}}");
+    var loc = window.location, new_uri;
+    if (loc.protocol === "https:") {
+      ws_uri = "wss:";
+    } else {
+      ws_uri = "ws:";
+    }
+    ws_uri += "//" + loc.host;
+    ws_uri += "/join-session/{{.ID}}";
+    let socket = new WebSocket(ws_uri);
     console.log("Attempting Connection...");
 
     socket.onopen = () => {

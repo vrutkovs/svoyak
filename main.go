@@ -2,9 +2,7 @@ package main
 
 import (
 	"html/template"
-	"log"
 	"net/http"
-	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -35,11 +33,7 @@ func health(c *gin.Context) {
 }
 
 func main() {
-	url := os.Getenv("URL")
-	if len(url) < 0 {
-		log.Fatal("No URL env var set")
-	}
-	server := &ServerSettings{url: url}
+	server := &ServerSettings{}
 
 	r := gin.New()
 	// Don't log k8s health endpoint
@@ -63,7 +57,5 @@ func main() {
 
 	r.GET("/ws/session-status/:id", server.handleStatusViaWS)
 	r.GET("/ws/join-session/:id", server.handleJoinViaWS)
-
-	log.Printf("Server started, URL: %s\n", url)
 	r.Run()
 }
