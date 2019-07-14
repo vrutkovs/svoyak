@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -12,6 +13,7 @@ import (
 func (s *ServerSettings) prepareSession(c *gin.Context) {
 	// generate random UUID for session
 	sessionPage := fmt.Sprintf("%s/session/%s", s.url, xid.New().String())
+	log.Printf("Generated URL: %s\n", sessionPage)
 	// redirect to session page
 	c.Redirect(http.StatusMovedPermanently, sessionPage)
 }
