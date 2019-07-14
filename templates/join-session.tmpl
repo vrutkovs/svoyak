@@ -12,7 +12,7 @@
       ws_uri = "ws:";
     }
     ws_uri += "//" + loc.host;
-    ws_uri += "/join-session/{{.ID}}";
+    ws_uri += "/ws/join-session/{{.ID}}";
     let socket = new WebSocket(ws_uri);
     console.log("Attempting Connection...");
 

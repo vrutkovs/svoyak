@@ -14,7 +14,7 @@
       ws_uri = "ws:";
     }
     ws_uri += "//" + loc.host;
-    ws_uri += "/session-status/{{.ID}}";
+    ws_uri += "/ws/session-status/{{.ID}}";
     let socket = new WebSocket(ws_uri);
     console.log("Attempting Connection...");
 

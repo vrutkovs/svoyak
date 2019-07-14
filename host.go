@@ -52,9 +52,11 @@ func (s *ServerSettings) handleJoinViaWS(c *gin.Context) {
 	for {
 		t, msg, err := conn.ReadMessage()
 		if err != nil {
+			log.Printf("Error reading message: %s", err)
 			break
 		}
 		if t != websocket.TextMessage {
+			log.Printf("Not a text message: %d", t)
 			continue
 		}
 		var m WSMessage
