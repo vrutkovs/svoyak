@@ -11,7 +11,7 @@ import (
 // handleStart would display a random QR code for the session
 func (s *ServerSettings) handleStart() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		s.prepareSession(&w)
+		s.prepareSession(&w, r)
 	}
 }
 
@@ -39,6 +39,18 @@ func (s *ServerSettings) handleButton() http.HandlerFunc {
 	}
 }
 
+// handleStatus would be the main page for the session
+func (s *ServerSettings) handleSession() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Verify session is present
+		session, err := getParam(r, "id")
+		if err != nil {
+			return
+		}
+		s.statusPage(&w, session)
+	}
+}
+
 func main() {
 	url := os.Getenv("URL")
 	if len(url) < 0 {
@@ -48,6 +60,7 @@ func main() {
 	log.Printf("Server started, URL: %s\n", url)
 
 	http.HandleFunc("/", server.handleStart())
+	http.HandleFunc("/session", server.handleSession())
 	http.HandleFunc("/join", server.handleJoin())
 	http.HandleFunc("/button", server.handleButton())
 	log.Fatal(http.ListenAndServe(":8080", nil))
