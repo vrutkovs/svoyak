@@ -6,16 +6,11 @@ import (
 	"github.com/jessevdk/go-assets"
 )
 
-var _Assetsceff1b12f5be500ebdc38a841eff4d5a095217bb = "<html>\n<head>\n  <title>Svoyak</title>\n</head>\n<body>\n  <a href=\"{{.Url}}/join?id={{.ID}}\">Join game</a><br/>\n  QR code goes here\n</body>\n</html>\n"
+var _Assetsf5c0efbde7635361885b1d248656b3f8c8dbe7a4 = "<html>\n<head>\n  <title>Svoyak</title>\n</head>\n<body>\n  <a href=\"{{.Url}}/join?id={{.ID}}\">Join game</a><br/>\n  QR code goes here\n</body>\n</html>\n"
 
 // Assets returns go-assets FileSystem
-var Assets = assets.NewFileSystem(map[string][]string{"/": []string{"templates"}, "/templates": []string{"start-page.tmpl"}}, map[string]*assets.File{
-	"/templates/start-page.tmpl": &assets.File{
-		Path:     "/templates/start-page.tmpl",
-		FileMode: 0x1a4,
-		Mtime:    time.Unix(1563110276, 1563110276389652413),
-		Data:     []byte(_Assetsceff1b12f5be500ebdc38a841eff4d5a095217bb),
-	}, "/": &assets.File{
+var Assets = assets.NewFileSystem(map[string][]string{"/": []string{"templates"}, "/templates": []string{"session.tmpl"}}, map[string]*assets.File{
+	"/": &assets.File{
 		Path:     "/",
 		FileMode: 0x800001ed,
 		Mtime:    time.Unix(1563110241, 1563110241702201044),
@@ -23,6 +18,11 @@ var Assets = assets.NewFileSystem(map[string][]string{"/": []string{"templates"}
 	}, "/templates": &assets.File{
 		Path:     "/templates",
 		FileMode: 0x800001ed,
-		Mtime:    time.Unix(1563110207, 1563110207313753565),
+		Mtime:    time.Unix(1563112186, 1563112186723115818),
 		Data:     nil,
+	}, "/templates/session.tmpl": &assets.File{
+		Path:     "/templates/session.tmpl",
+		FileMode: 0x1a4,
+		Mtime:    time.Unix(1563112186, 1563112186725000000),
+		Data:     []byte(_Assetsf5c0efbde7635361885b1d248656b3f8c8dbe7a4),
 	}}, "")
