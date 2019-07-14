@@ -28,7 +28,7 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        app: pod-hunt
+        app: svoyak
         deploymentconfig: svoyak
     spec:
       containers:
@@ -48,8 +48,6 @@ spec:
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext: {}
-      serviceAccount: ripper
-      serviceAccountName: ripper
       terminationGracePeriodSeconds: 30
   test: false
   triggers:

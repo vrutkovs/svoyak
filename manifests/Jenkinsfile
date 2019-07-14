@@ -1,0 +1,41 @@
+node('master') {
+  checkout scm
+  stage('Update config') {
+    openshift.withCluster() {
+      openshift.withProject() {
+        echo "Using project ${openshift.project()} in cluster with url ${openshift.cluster()}"
+        openshift.apply('-f', 'manifests/')
+      }
+    }
+  }
+
+  stage('Source build') {
+    openshift.withCluster() {
+      openshift.withProject() {
+        echo "Waiting for src build to complete"
+        def bc = openshift.selector('buildconfig/svoyak-src')
+        def buildSelector = bc.startBuild()
+        buildSelector.logs('-f')
+      }
+    }
+  }
+
+  stage('Binary build') {
+    openshift.withCluster() {
+      openshift.withProject() {
+        echo "Waiting for binary build to complete"
+        def bc = openshift.selector('buildconfig/svoyak-bin')
+        def buildSelector = bc.startBuild()
+        buildSelector.logs('-f')
+      }
+    }
+  }
+
+  stage('Rollout deployment') {
+    openshift.withCluster() {
+      openshift.withProject() {
+        openshift.selector('dc', "svoyak").rollout().status()
+      }
+    }
+  }
+}
