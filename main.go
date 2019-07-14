@@ -41,17 +41,19 @@ func main() {
 	}
 	server := &ServerSettings{url: url}
 
-	r := gin.Default()
+	r := gin.New()
+	// Don't log k8s health endpoint
+	r.Use(
+		gin.LoggerWithWriter(gin.DefaultWriter, "/health"),
+		gin.Recovery(),
+	)
+
+	// Load templates from bin assets
 	t, err := loadTemplate()
 	if err != nil {
 		panic(err)
 	}
 	r.SetHTMLTemplate(t)
-
-	r.Use(
-		gin.LoggerWithWriter(gin.DefaultWriter, "/health"),
-		gin.Recovery(),
-	)
 
 	r.GET("/", server.prepareSession)
 	r.GET("/health", health)
