@@ -47,7 +47,7 @@ func main() {
 	server := &ServerSettings{url: url}
 	log.Printf("Server started, URL: %s\n", url)
 
-	http.HandleFunc("/start", server.handleStart())
+	http.HandleFunc("/", server.handleStart())
 	http.HandleFunc("/join", server.handleJoin())
 	http.HandleFunc("/button", server.handleButton())
 	log.Fatal(http.ListenAndServe(":8080", nil))
