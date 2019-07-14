@@ -16,9 +16,7 @@ node('master') {
         def bc = openshift.selector('buildconfig/svoyak-src')
         def newBuild = bc.startBuild()
         def status = newBuild.logs('-f').status
-        if ( status != 0) {
-          error('Source failed to build, status: "'+status+'"')
-        }
+        openshift.failUnless(status == 0)
       }
     }
   }
@@ -30,9 +28,7 @@ node('master') {
         def bc = openshift.selector('buildconfig/svoyak-bin')
         def newBuild = bc.startBuild()
         def status = newBuild.logs('-f').status
-        if (status != 0) {
-          error('Binary build failed to build, status: "'+status+'"')
-        }
+        openshift.failUnless(status == 0)
       }
     }
   }
