@@ -47,6 +47,7 @@ func main() {
 		gin.LoggerWithWriter(gin.DefaultWriter, "/health"),
 		gin.Recovery(),
 	)
+	r.GET("/health", health)
 
 	// Load templates from bin assets
 	t, err := loadTemplate()
@@ -56,7 +57,6 @@ func main() {
 	r.SetHTMLTemplate(t)
 
 	r.GET("/", server.prepareSession)
-	r.GET("/health", health)
 	r.GET("/session/:id", server.showStatus)
 	r.GET("/join/:id", server.joinGame)
 	r.GET("/button/:id", server.buttonClick)
