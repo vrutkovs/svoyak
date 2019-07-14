@@ -4,17 +4,22 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/rs/xid"
 )
 
-func (s *ServerSettings) prepareSession(w *http.ResponseWriter, r *http.Request) {
+// prepareSession would display a random QR code for the session
+func (s *ServerSettings) prepareSession(c *gin.Context) {
 	// generate random UUID for session
-	// redirect to start page
-	http.Redirect(*w, r, fmt.Sprintf("%s/session?id=%s", s.url, xid.New().String()), 301)
+	sessionPage := fmt.Sprintf("%s/session?id=%s", s.url, xid.New().String())
+	// redirect to session page
+	c.Redirect(http.StatusMovedPermanently, sessionPage)
 }
 
-func (s *ServerSettings) statusPage(w *http.ResponseWriter, session string) {
-	// generate QR code
-	// encode QR code in base64 and return html page with image
-	renderStart(session, w, s)
+func (s *ServerSettings) showStatus(c *gin.Context) {
+	// TODO: generate QR code
+c.HTML(http.StatusOK, "/templates/start-page.tmpl", gin.H{
+		"Url": s.url,
+		"ID": c.Param("id"),
+	})
 }

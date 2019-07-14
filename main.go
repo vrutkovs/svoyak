@@ -1,54 +1,31 @@
 package main
 
 import (
+	"html/template"
+	"io/ioutil"
 	"log"
-	"net/http"
 	"os"
+	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
-//TODO: use gorilla mux insted of arg parsing
-
-// handleStart would display a random QR code for the session
-func (s *ServerSettings) handleStart() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		s.prepareSession(&w, r)
-	}
-}
-
-// handleJoin would add user to the session
-func (s *ServerSettings) handleJoin() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		// Verify session is present
-		session, err := getParam(r, "id")
-		if err != nil {
-			return
+func loadTemplate() (*template.Template, error) {
+	t := template.New("")
+	for name, file := range Assets.Files {
+		if file.IsDir() || !strings.HasSuffix(name, ".tmpl") {
+			continue
 		}
-		s.joinGame(&w, session)
-	}
-}
-
-// handleStart would display a random QR code for the session
-func (s *ServerSettings) handleButton() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		// Verify session is present
-		session, err := getParam(r, "id")
+		h, err := ioutil.ReadAll(file)
 		if err != nil {
-			return
+			return nil, err
 		}
-		s.click(&w, session)
-	}
-}
-
-// handleStatus would be the main page for the session
-func (s *ServerSettings) handleSession() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		// Verify session is present
-		session, err := getParam(r, "id")
+		t, err = t.New(name).Parse(string(h))
 		if err != nil {
-			return
+			return nil, err
 		}
-		s.statusPage(&w, session)
 	}
+	return t, nil
 }
 
 func main() {
@@ -57,11 +34,19 @@ func main() {
 		log.Fatal("No URL env var set")
 	}
 	server := &ServerSettings{url: url}
-	log.Printf("Server started, URL: %s\n", url)
 
-	http.HandleFunc("/", server.handleStart())
-	http.HandleFunc("/session", server.handleSession())
-	http.HandleFunc("/join", server.handleJoin())
-	http.HandleFunc("/button", server.handleButton())
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	r := gin.Default()
+	t, err := loadTemplate()
+	if err != nil {
+		panic(err)
+	}
+	r.SetHTMLTemplate(t)
+
+	r.GET("/", server.prepareSession)
+	r.GET("/session/:id", server.showStatus)
+	r.GET("/join/:id", server.joinGame)
+	r.GET("/button/:id", server.buttonClick)
+
+	log.Printf("Server started, URL: %s\n", url)
+	r.Run()
 }
