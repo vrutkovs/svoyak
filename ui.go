@@ -17,5 +17,5 @@ func renderStart(id string, w *http.ResponseWriter, s *ServerSettings) {
 		QR code goes here
 	 </body>
 	</html>
-	`, id, s.url)
+	`, s.url, id)
 }
