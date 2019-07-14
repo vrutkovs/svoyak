@@ -1,0 +1,61 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    image.openshift.io/triggers: |
+      [
+        {"from":{"kind":"ImageStreamTag","name":"svoyak:bin"},"fieldPath":"spec.template.spec.containers[?(@.name==\"svoyak\")].image"}
+      ]
+  labels:
+    app: svoyak
+  name: svoyak
+  namespace: svoyak
+spec:
+  replicas: 1
+  selector:
+    deploymentconfig: svoyak
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: pod-hunt
+        deploymentconfig: svoyak
+    spec:
+      containers:
+        - image: ''
+          imagePullPolicy: Always
+          name: svoyak
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: ripper
+      serviceAccountName: ripper
+      terminationGracePeriodSeconds: 30
+  test: false
+  triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - svoyak
+        from:
+          kind: ImageStreamTag
+          name: 'svoyak:bin'
+      type: ImageChange
+    - type: ConfigChange

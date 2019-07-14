@@ -1,0 +1,47 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    app: svoyak
+  name: svoyak-bin
+  namespace: svoyak
+spec:
+  failedBuildsHistoryLimit: 5
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: "svoyak:bin"
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    dockerfile: |-
+      FROM registry.access.redhat.com/ubi8/ubi
+      COPY gobinary /usr/local/bin/svoyak
+      EXPOSE 8080
+      ENTRYPOINT ["/usr/local/bin/svoyak"]
+    images:
+    - as: null
+      from:
+        kind: ImageStreamTag
+        name: "svoyak:src"
+      paths:
+      - destinationDir: .
+        sourcePath: /opt/app-root/gobinary
+    type: Dockerfile
+  strategy:
+    dockerStrategy:
+      from:
+        kind: ImageStreamTag
+        name: "svoyak:ubi8"
+    type: Docker
+  successfulBuildsHistoryLimit: 5
+  triggers:
+  - type: ImageChange
+    imageChange:
+      from:
+        kind: ImageStreamTag
+        name: "svoyak:src"
+  - type: ConfigChange
+  - type: ImageChange

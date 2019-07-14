@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: svoyak
+  namespace: svoyak
+spec:
+  selector:
+    deploymentconfig: svoyak
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
