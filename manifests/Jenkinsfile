@@ -36,7 +36,9 @@ node('master') {
   stage('Rollout deployment') {
     openshift.withCluster() {
       openshift.withProject() {
-        openshift.selector('dc', "svoyak").rollout().status()
+        def dc = openshift.selector('dc', "svoyak")
+        dc.rollout().latest()
+        dc.rollout().status()
       }
     }
   }
