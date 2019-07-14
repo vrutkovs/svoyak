@@ -22,7 +22,7 @@ func (s *ServerSettings) handleStart() http.HandlerFunc {
 func (s *ServerSettings) handleJoin() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Verify session is present
-		session, err := getParam(r, "session")
+		session, err := getParam(r, "id")
 		if err != nil {
 			return
 		}
@@ -34,7 +34,7 @@ func (s *ServerSettings) handleJoin() http.HandlerFunc {
 func (s *ServerSettings) handleButton() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Verify session is present
-		session, err := getParam(r, "session")
+		session, err := getParam(r, "id")
 		if err != nil {
 			return
 		}
