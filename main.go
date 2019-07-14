@@ -58,9 +58,11 @@ func main() {
 
 	r.GET("/", server.generateSession)
 	r.GET("/session/:id", server.showStatus)
-	r.GET("/ws/session/:id", server.statusWebSocket)
 	r.GET("/join/:id", server.joinGame)
 	r.GET("/button/:id", server.buttonClick)
+
+	r.GET("/ws/session-status/:id", server.handleStatusViaWS)
+	r.GET("/ws/join-session/:id", server.handleJoinViaWS)
 
 	log.Printf("Server started, URL: %s\n", url)
 	r.Run()

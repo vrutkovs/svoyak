@@ -3,11 +3,9 @@
   <title>Svoyak</title>
 </head>
 <body>
-  <a href="{{.Url}}/join/{{.ID}}">Join game</a><br/>
-  QR code goes here
-
+  This is your button. There are many like it, but this one is yours
   <script>
-    let socket = new WebSocket("ws://{{.Url}}/ws/session-status/{{.ID}}");
+    let socket = new WebSocket("ws://{{.Url}}/ws/join-session/{{.ID}}");
     console.log("Attempting Connection...");
 
     socket.onopen = () => {

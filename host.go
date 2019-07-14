@@ -21,12 +21,28 @@ var wsupgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
-func (s *ServerSettings) statusWebSocket(c *gin.Context) {
-	s.wsSessionJoin(c.Writer, c.Request)
+func (s *ServerSettings) handleStatusViaWS(c *gin.Context) {
+	conn, err := wsupgrader.Upgrade(c.Writer, c.Request, nil)
+
+	if err != nil {
+		log.Printf("Failed to upgrade ws: %+v", err)
+		return
+	}
+
+	s.statusWebSocket = conn
 }
 
-func (s *ServerSettings) wsSessionJoin(w http.ResponseWriter, r *http.Request) {
-	conn, err := wsupgrader.Upgrade(w, r, nil)
+// sendStatusViaWebSocket would display client ID
+func (s *ServerSettings) sendStatusViaWebSocket(id string) {
+	// TODO: create a structure
+	responseJSON := fmt.Sprintf("{'action': 'join', 'id': '%s'}", id)
+	if s.statusWebSocket != nil {
+		s.statusWebSocket.WriteMessage(websocket.TextMessage, []byte(responseJSON))
+	}
+}
+
+func (s *ServerSettings) handleJoinViaWS(c *gin.Context) {
+	conn, err := wsupgrader.Upgrade(c.Writer, c.Request, nil)
 
 	if err != nil {
 		log.Printf("Failed to upgrade ws: %+v", err)
@@ -38,22 +54,26 @@ func (s *ServerSettings) wsSessionJoin(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			break
 		}
+		if t != websocket.TextMessage {
+			continue
+		}
 		var m WSMessage
 		err = json.Unmarshal(msg, &m)
 		if err != nil {
 			log.Printf("Failed to unmarshal message '%+v': %+v", msg, err)
 		}
 		if m.action == "join" {
-			s.handleJoin(m, t, conn)
+			clientID := xid.New().String()
+			s.handleJoin(m, t, conn, clientID)
+			s.sendStatusViaWebSocket(clientID)
 		}
-		// conn.WriteMessage(t, msg)
 	}
 }
 
 // handleJoin would generate a userID for a button and generate unique URL
-func (s *ServerSettings) handleJoin(w WSMessage, t int, conn *websocket.Conn) {
+func (s *ServerSettings) handleJoin(w WSMessage, t int, conn *websocket.Conn, id string) {
 	//TODO: associate button ID with session
-	buttonURL := fmt.Sprintf("%s/button/%s", s.url, xid.New().String())
+	buttonURL := fmt.Sprintf("%s/button/%s", s.url, id)
 	conn.WriteMessage(t, []byte(buttonURL))
 }
 
