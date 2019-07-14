@@ -37,7 +37,7 @@ node('master') {
     openshift.withCluster() {
       openshift.withProject() {
         def dc = openshift.selector('dc', "svoyak")
-        dc.status()
+        dc.rollout().status()
       }
     }
   }
